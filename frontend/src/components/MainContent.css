@@ -1,0 +1,5 @@
+/* frontend/src/components/MainContent.css */
+.main-content {
+    margin-left: 250px; /* Ajuste para que el contenido comience después de la barra lateral */
+  padding: 20px;
+}

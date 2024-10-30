@@ -1,0 +1,57 @@
+.sidebar {
+    position: fixed; /* Para que se fije al borde izquierdo */
+    top: 0;
+    left: 0;
+    height: 100vh; /* Ocupa el 100% de la altura de la ventana */
+    width: 250px; /* Ajusta este valor según el ancho deseado */
+    background-color: #1e2a38; /* El color de fondo de la barra de navegación */
+    padding: 20px;
+    box-sizing: border-box; /* Para que padding no afecte el tamaño total */
+  }
+  
+  /* Asegúrate de que los elementos dentro de la barra también tengan estilo */
+  .sidebar h1, .sidebar a {
+    color: #ffffff;
+    text-decoration: none;
+    margin: 10px 0;
+  }
+
+.logo img {
+    width: 200px;
+    height: auto;
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.nav-menu h3 {
+    cursor: pointer;
+    font-weight: bold;
+    color: #9ca3af; /* Color de encabezado */
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-menu h3:hover {
+    color: #ffffff; /* Cambia el color al pasar el ratón */
+}
+
+.nav-menu ul {
+    list-style-type: none;
+    padding-left: 10px;
+    margin-top: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-menu ul li {
+    margin-bottom: 8px;
+    color: #d1d5db; /* Color de texto claro */
+    cursor: pointer;
+}
+
+.nav-menu ul li:hover {
+    color: #ffffff; /* Cambia el color al pasar el ratón */
+}
