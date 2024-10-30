@@ -1,11 +1,23 @@
-/* Estilos para el modo claro */
-body {
-  background-color: white;
-  color: black;
+.app-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* Estilos para el modo oscuro */
-body.dark-mode {
-  background-color: #121212;
+.sidebar {
+  width: 250px;
+  background-color: #2c3e50;
   color: white;
+  padding: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 20px;
+  width: calc(100% - 250px);
+  overflow-y: auto;
 }

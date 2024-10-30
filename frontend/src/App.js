@@ -1,28 +1,23 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Aspecto from './pages/Aspecto';
-import { ThemeContext } from './context/ThemeContext';
+import './App.css';
 
 function App() {
-  const { isDarkMode } = useContext(ThemeContext);
-
-  useEffect(() => {
-    document.body.classList.toggle('dark-mode', isDarkMode);
-  }, [isDarkMode]);
-
   return (
     <Router>
-      <div className="App">
+      <div className="app-container">
         <Sidebar />
-        <Routes>
-          <Route path="/configuraciones/aspecto" element={<Aspecto />} />
-        </Routes>
+        <div className="main-content">
+          <Routes>
+            <Route path="/configuraciones/aspecto" element={<Aspecto />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
 }
 
 export default App;
-
 

@@ -1,24 +1,13 @@
-import React, { useContext } from 'react';
-import { ThemeContext } from '../context/ThemeContext';
+// Aspecto.js
+import React from 'react';
 
-const Aspecto = () => {
-  const { isDarkMode, toggleDarkMode } = useContext(ThemeContext);
-
-  return (
-    <div className="aspecto-page">
-      <h2>Configuraciones</h2>
-      <div className="theme-toggle">
-        <span>Activar modo oscuro</span>
-        <input
-          type="checkbox"
-          checked={isDarkMode}
-          onChange={toggleDarkMode}
-        />
-      </div>
-    </div>
-  );
-};
+function Aspecto() {
+    return (
+        <div>
+            <h1>Configuraciones - Aspecto</h1>
+            <p>Aquí puedes ajustar el modo oscuro u otras configuraciones de apariencia.</p>
+        </div>
+    );
+}
 
 export default Aspecto;
-
-
