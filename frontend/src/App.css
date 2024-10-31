@@ -42,3 +42,23 @@ input.dark-mode, label.dark-mode {
   color: #ffffff;
   border-color: #444;
 }
+
+/* Estilos para el componente AnalisisBaseDatos */
+.analisis-container {
+  padding: 20px;
+}
+
+.analisis-container button {
+  margin: 5px;
+}
+
+.analisis-container textarea {
+  width: 100%;
+  height: 100px;
+  margin: 10px 0;
+}
+
+.analisis-container .results textarea {
+  width: 100%;
+  height: 80px;
+}
