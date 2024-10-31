@@ -21,3 +21,24 @@
   width: calc(100% - 250px);
   overflow-y: auto;
 }
+
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.sidebar.dark-mode {
+  background-color: #333;
+}
+
+.main-content.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* Estilos para inputs, labels y otros elementos */
+input.dark-mode, label.dark-mode {
+  background-color: #333;
+  color: #ffffff;
+  border-color: #444;
+}
