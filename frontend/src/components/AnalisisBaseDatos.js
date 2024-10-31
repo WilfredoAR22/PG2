@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function AnalisisBaseDatos() {
   const [sqlContent, setSqlContent] = useState('');
@@ -12,10 +13,21 @@ function AnalisisBaseDatos() {
     reader.readAsText(file);
   };
 
-  const handleAnalyze = () => {
-    // Lógica de análisis, por ahora es un ejemplo vacío
-    setDiagrama("Diagrama generado aquí");
-    setAlertas("Alertas de inconsistencia o duplicidad aquí");
+  const handleAnalyze = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/analizar', { scriptSQL: sqlContent });
+      const { redundancias, duplicidades, mensaje } = response.data;
+  
+      setDiagrama("Diagrama generado aquí"); // Coloca el diagrama real si el backend lo retorna
+      setAlertas(
+        mensaje + "\n" +
+        (redundancias.length > 0 ? `Redundancias encontradas: ${JSON.stringify(redundancias)}` : "No se encontraron redundancias") + "\n" +
+        (duplicidades.length > 0 ? `Duplicidades encontradas: ${JSON.stringify(duplicidades)}` : "No se encontraron duplicidades")
+      );
+    } catch (error) {
+      console.error("Error al analizar el script:", error);
+      setAlertas("Error al analizar el script SQL.");
+    }
   };
 
   const handleClear = () => {
