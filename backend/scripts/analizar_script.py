@@ -1,44 +1,48 @@
+# backend/scripts/analizar_script.py
 import sys
 import json
 import sqlparse
-from difflib import SequenceMatcher
-
-def similar(a, b):
-    return SequenceMatcher(None, a, b).ratio()
+from transformers import pipeline
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 def analizar_redundancias(script_sql):
-    resultado = {
-        "mensaje": "Análisis completado",
-        "redundancias": [],
-        "duplicidades": []
-    }
-
+    # Inicializamos el modelo de lenguaje de transformers
+    nlp = pipeline("feature-extraction", model="bert-base-uncased", tokenizer="bert-base-uncased")
+    
+    # Parseamos el SQL para obtener solo el texto relevante de los nombres de las columnas
     parsed = sqlparse.parse(script_sql)
-    columns = []
-
+    columnas = []
     for statement in parsed:
         if statement.get_type() == 'CREATE':
-            tokens = [str(token).strip() for token in statement.tokens if not token.is_whitespace]
-            column_names = [token.split()[0] for token in tokens if 'VARCHAR' in token or 'INT' in token]
-            columns.extend(column_names)
+            for token in statement.tokens:
+                if token.ttype is None and '(' in str(token):
+                    for sub_token in token.tokens:
+                        if sub_token.ttype is None:
+                            columnas.append(sub_token.value.strip())
 
-            # Detectar duplicidades exactas
-            for column in set(column_names):
-                if column_names.count(column) > 1:
-                    resultado["duplicidades"].append({
-                        "mensaje": f"Columna duplicada encontrada: {column}"
+    # Convertimos las columnas en vectores
+    column_embeddings = [nlp(col)[0][0] for col in columnas]
+    
+    # Calculamos similitud de coseno entre las columnas
+    redundancias = []
+    for i, emb1 in enumerate(column_embeddings):
+        for j, emb2 in enumerate(column_embeddings):
+            if i < j:
+                sim = cosine_similarity([emb1], [emb2])[0][0]
+                if sim > 0.85:  # Umbral para detectar similitud
+                    redundancias.append({
+                        "column1": columnas[i],
+                        "column2": columnas[j],
+                        "similitud": sim
                     })
-
-            # Detectar redundancias similares
-            for i, col1 in enumerate(column_names):
-                for col2 in column_names[i + 1:]:
-                    if similar(col1, col2) > 0.7 and col1 != col2:
-                        resultado["redundancias"].append({
-                            "column1": col1,
-                            "column2": col2,
-                            "similitud": similar(col1, col2) * 100
-                        })
-
+    
+    resultado = {
+        "mensaje": "Análisis completado",
+        "redundancias": redundancias,
+        "duplicidades": []  # Puedes agregar lógica adicional aquí para duplicidades
+    }
+    
     return resultado
 
 if __name__ == "__main__":
@@ -46,3 +50,4 @@ if __name__ == "__main__":
     script_sql = data.get("scriptSQL", "")
     resultado = analizar_redundancias(script_sql)
     print(json.dumps(resultado))
+
