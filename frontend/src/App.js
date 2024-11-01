@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Aspecto from './pages/Aspecto';
-import AnalisisBaseDatos from './components/AnalisisBaseDatos';
+import AnalisisBaseDatos from './pages/AnalisisBaseDatos';
 import { ThemeProvider, ThemeContext } from './context/ThemeContext';
 import './App.css';
 

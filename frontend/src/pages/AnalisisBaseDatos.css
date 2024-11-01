@@ -1,0 +1,101 @@
+/* Estilos para el contenedor principal */
+.analisis-container {
+  width: 97%;
+  padding: 20px;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+}
+
+/* Colores en modo claro */
+body {
+  --text-color: #333333;
+  --button-bg-color: #4D8BF3;
+  --button-text-color: #ffffff;
+  --button-danger-bg-color: #F76C6C;
+  --textarea-bg-color: #ffffff;
+  --textarea-border-color: #dddddd;
+}
+
+/* Colores en modo oscuro */
+body.dark-mode {
+  --text-color: #dddddd;
+  --button-bg-color: #3a82f7;
+  --button-text-color: #ffffff;
+  --button-danger-bg-color: #e05c5c;
+  --textarea-bg-color: #333333;
+  --textarea-border-color: #444444;
+}
+
+.titulo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--text-color);
+  margin-bottom: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+/* Botón de cargar archivo */
+.cargar-archivo {
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+/* Textareas */
+.script-textarea, .diagrama-textarea, .alertas-textarea {
+  width: 97%;
+  min-height: 250px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--textarea-border-color);
+  background-color: var(--textarea-bg-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+/* Botones de acción */
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.analizar-btn {
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.limpiar-btn {
+  background-color: var(--button-danger-bg-color);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+/* Resultados y advertencias */
+.resultados, .alertas {
+  width: 100%;
+}
+
+.alertas h3 {
+  font-size: 1.2rem;
+  color: var(--text-color);
+}
+
