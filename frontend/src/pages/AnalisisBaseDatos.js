@@ -5,7 +5,7 @@ import './AnalisisBaseDatos.css';
 function AnalisisBaseDatos() {
   const [sqlContent, setSqlContent] = useState('');
   const [diagrama, setDiagrama] = useState('');
-  const [alertas, setAlertas] = useState('');
+  const [alertas, setAlertas] = useState([]);
   const [mostrarDiagrama, setMostrarDiagrama] = useState(false);
 
   const handleFileUpload = (event) => {
@@ -17,22 +17,30 @@ function AnalisisBaseDatos() {
 
   const handleAnalyze = async () => {
     try {
-        const response = await axios.post('http://localhost:3000/generar_diagrama', { scriptSQL: sqlContent });
-        const { diagramaER, mensaje } = response.data;
-
+        // Llamada al endpoint para generar el diagrama
+        const diagramaResponse = await axios.post('http://localhost:3000/generar_diagrama', { scriptSQL: sqlContent });
+        const { diagramaER, mensaje: mensajeDiagrama } = diagramaResponse.data;
+        
         setDiagrama(diagramaER);
-        setAlertas(mensaje || "No se encontraron advertencias.");
         setMostrarDiagrama(true);
+
+        // Llamada al endpoint para analizar redundancia y duplicidad
+        const analizarResponse = await axios.post('http://localhost:3000/analizar', { scriptSQL: sqlContent });
+        const { advertencias, mensaje: mensajeAnalisis } = analizarResponse.data;
+
+        // Procesa las advertencias, muestra el mensaje si no hay advertencias
+        setAlertas(advertencias.length ? advertencias : [mensajeAnalisis || "No se encontraron advertencias."]);
     } catch (error) {
         console.error("Error al analizar el script:", error);
-        setAlertas("Error al analizar el script SQL.");
+        setAlertas(["Error al analizar el script SQL."]);
     }
   };
+
 
   const handleClear = () => {
     setSqlContent('');
     setDiagrama('');
-    setAlertas('');
+    setAlertas([]);
     setMostrarDiagrama(false);
   };
 
@@ -60,7 +68,6 @@ function AnalisisBaseDatos() {
       {mostrarDiagrama && (
         <div className="resultados">
           <div className="diagrama-container">
-            {/* Aquí se muestra el diagrama como una imagen en lugar de texto */}
             {diagrama ? (
               <img src={diagrama} alt="Diagrama Entidad-Relación" className="diagrama-imagen" />
             ) : (
@@ -70,7 +77,11 @@ function AnalisisBaseDatos() {
           </div>
           <div className="alertas">
             <h3>Advertencias</h3>
-            <textarea className="alertas-textarea" value={alertas} readOnly />
+            <ul className="alertas-lista">
+              {alertas.map((alerta, index) => (
+                <li key={index}>{alerta}</li>
+              ))}
+            </ul>
           </div>
         </div>
       )}
@@ -79,5 +90,3 @@ function AnalisisBaseDatos() {
 }
 
 export default AnalisisBaseDatos;
-
-

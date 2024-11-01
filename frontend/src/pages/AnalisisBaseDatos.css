@@ -117,3 +117,12 @@ body.dark-mode .diagrama-imagen {
 body:not(.dark-mode) .diagrama-imagen {
   filter: invert(0%); /* Sin inversión para modo claro */
 }
+
+.alertas-lista {
+  list-style-type: disc;
+  padding-left: 20px;
+  color: var(--text-color);
+}
+.alertas-lista li {
+  margin-bottom: 8px;
+}
