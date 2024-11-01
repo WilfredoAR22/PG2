@@ -6,7 +6,7 @@ import base64
 
 def generar_diagrama_er(script_sql):
     parsed = sqlparse.parse(script_sql)
-    graph = pydot.Dot(graph_type='digraph', bgcolor="transparent", rankdir="TB")  # Cambié a "TB" para top-to-bottom
+    graph = pydot.Dot(graph_type='digraph', bgcolor="transparent", rankdir="TB")
 
     tablas = {}
     relaciones = []
@@ -14,41 +14,60 @@ def generar_diagrama_er(script_sql):
     for statement in parsed:
         if statement.get_type() == 'CREATE':
             tokens = [token for token in statement.tokens if not token.is_whitespace]
-            table_name = tokens[2].get_real_name()
+            table_name = ""
             atributos = []
-            for token in tokens:
-                if token.ttype is None and '(' in str(token):
-                    columns = str(token).split(',')
-                    for col in columns:
-                        col_parts = col.strip().split()
-                        col_name = col_parts[0]
-                        col_type = col_parts[1] if len(col_parts) > 1 else ""
-                        if "PRIMARY KEY" in col:
-                            atributos.append((col_name, col_type, "PK"))
-                        elif "FOREIGN KEY" in col:
-                            fk_table = col.split("REFERENCES")[1].split("(")[0].strip()
-                            fk_column = col.split("REFERENCES")[1].split("(")[1].replace(")", "").strip()
-                            atributos.append((col_name, col_type, "FK"))
-                            relaciones.append((table_name, col_name, fk_table, fk_column))
-                        else:
-                            atributos.append((col_name, col_type, ""))
 
-            tablas[table_name] = atributos
+            # Identificar el nombre de la tabla
+            for idx, token in enumerate(tokens):
+                if token.ttype is None and token.get_real_name():
+                    table_name = token.get_real_name()
+                    break
+            
+            if table_name:
+                dentro_columnas = False
+                for token in tokens:
+                    if token.ttype is None and '(' in str(token):  # Inicio de columnas
+                        dentro_columnas = True
+                    elif token.ttype is None and ')' in str(token):  # Fin de columnas
+                        dentro_columnas = False
 
+                    # Extraer solo el nombre de las columnas y marcar claves
+                    if dentro_columnas and token.ttype is None:
+                        columns = str(token).split(',')
+                        for col in columns:
+                            col_parts = col.strip().split()
+                            col_name = col_parts[0] if col_parts else ""
+
+                            # Identificar claves
+                            if "PRIMARY KEY" in col:
+                                atributos.append((col_name, "PK"))
+                            elif "FOREIGN KEY" in col:
+                                fk_table = col.split("REFERENCES")[1].split("(")[0].strip()
+                                fk_column = col.split("REFERENCES")[1].split("(")[1].replace(")", "").strip()
+                                atributos.append((col_name, "FK"))
+                                relaciones.append((table_name, fk_table))
+                            elif col_name:  # Solo el nombre del campo
+                                atributos.append((col_name, ""))
+
+                tablas[table_name] = [attr[0] for attr in atributos]  # Guardar solo nombres de campo
+
+    # Crear nodos para cada tabla
     for table_name, atributos in tablas.items():
         tabla_html = f"""<
             <table border="0" cellborder="1" cellspacing="0">
                 <tr><td bgcolor="lightgrey" align="center"><b>{table_name}</b></td></tr>
-                {''.join([f'<tr><td align="left">{attr[0]} {attr[1]} {"<b>(PK)</b>" if attr[2] == "PK" else "<i>(FK)</i>" if attr[2] == "FK" else ""}</td></tr>' for attr in atributos])}
+                {''.join([f'<tr><td align="left">{attr}</td></tr>' for attr in atributos])}
             </table>
         >"""
         node = pydot.Node(table_name, shape="plaintext", label=tabla_html)
         graph.add_node(node)
 
-    for (table_from, column_from, table_to, column_to) in relaciones:
-        edge = pydot.Edge(f"{table_from}:{column_from}", f"{table_to}:{column_to}", arrowhead="normal")
+    # Crear relaciones entre tablas
+    for (table_from, table_to) in relaciones:
+        edge = pydot.Edge(table_from, table_to, arrowhead="normal")
         graph.add_edge(edge)
 
+    # Generar imagen PNG en base64
     png_data = graph.create_png()
     base64_diagram = base64.b64encode(png_data).decode('utf-8')
     return base64_diagram
@@ -62,3 +81,4 @@ if __name__ == "__main__":
         "diagrama": diagrama
     }
     print(json.dumps(resultado))
+
