@@ -17,15 +17,16 @@ function AnalisisBaseDatos() {
 
   const handleAnalyze = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/analizar', { scriptSQL: sqlContent });
-      const { redundancias, duplicidades, mensaje } = response.data;
+        const modo = document.body.classList.contains("modo-oscuro") ? "oscuro" : "claro";  // Detecta el modo actual
+        const response = await axios.post('http://localhost:3000/generar_diagrama', { scriptSQL: sqlContent, modo });
+        const { diagramaER, mensaje } = response.data;
 
-      setDiagrama("Diagrama generado aquí"); // Cambiar cuando el backend retorne el diagrama
-      setAlertas(mensaje || "No se encontraron advertencias.");
-      setMostrarDiagrama(true);
+        setDiagrama(diagramaER);
+        setAlertas(mensaje || "No se encontraron advertencias.");
+        setMostrarDiagrama(true);
     } catch (error) {
-      console.error("Error al analizar el script:", error);
-      setAlertas("Error al analizar el script SQL.");
+        console.error("Error al analizar el script:", error);
+        setAlertas("Error al analizar el script SQL.");
     }
   };
 
@@ -60,7 +61,12 @@ function AnalisisBaseDatos() {
       {mostrarDiagrama && (
         <div className="resultados">
           <div className="diagrama-container">
-            <textarea className="diagrama-textarea" value={diagrama} readOnly />
+            {/* Aquí se muestra el diagrama como una imagen en lugar de texto */}
+            {diagrama ? (
+              <img src={diagrama} alt="Diagrama Entidad-Relación" className="diagrama-imagen" />
+            ) : (
+              <p>Diagrama generado aquí</p>
+            )}
             <button className="modificar-btn">Modificar</button>
           </div>
           <div className="alertas">

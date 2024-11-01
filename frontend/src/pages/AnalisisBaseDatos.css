@@ -99,3 +99,9 @@ body.dark-mode {
   color: var(--text-color);
 }
 
+.diagrama-imagen {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
