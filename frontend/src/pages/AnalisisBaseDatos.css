@@ -99,9 +99,21 @@ body.dark-mode {
   color: var(--text-color);
 }
 
-.diagrama-imagen {
+diagrama-imagen {
   width: 100%;
-  max-height: 400px;
+  height: auto;
   object-fit: contain;
-  margin-bottom: 10px;
+  padding: 10px;
+}
+  /*background-color: transparent; /* Fondo transparente */
+ 
+
+/* Ajuste de inversión de color para modo oscuro */
+body.dark-mode .diagrama-imagen {
+  filter: invert(100%); /* Inversión total para que el diagrama se vea con fondo claro */
+}
+
+/* Ajuste para modo claro */
+body:not(.dark-mode) .diagrama-imagen {
+  filter: invert(0%); /* Sin inversión para modo claro */
 }

@@ -17,8 +17,7 @@ function AnalisisBaseDatos() {
 
   const handleAnalyze = async () => {
     try {
-        const modo = document.body.classList.contains("modo-oscuro") ? "oscuro" : "claro";  // Detecta el modo actual
-        const response = await axios.post('http://localhost:3000/generar_diagrama', { scriptSQL: sqlContent, modo });
+        const response = await axios.post('http://localhost:3000/generar_diagrama', { scriptSQL: sqlContent });
         const { diagramaER, mensaje } = response.data;
 
         setDiagrama(diagramaER);
